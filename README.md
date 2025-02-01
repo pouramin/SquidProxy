@@ -215,3 +215,49 @@ sudo tail -f /var/log/squid/access.log
 cat /var/log/squid/access.log | grep "IP-USER"
 ```
 
+#### Install PAM:
+```
+sudo apt install libpam0g-dev -y
+```
+
+#### Create PAM Madule
+```
+sudo nano /etc/pam.d/squid
+```
+
+#### Paste the following Commands and Save:
+```
+auth required pam_unix.so shadow
+account required pam_unix.so
+```
+
+#### Configuration Squid for PAM Authentication Sys:
+```
+sudo nano /etc/squid/squid.conf
+```
+
+#### Add the following Commands:
+```
+auth_param basic program /usr/lib/squid/basic_pam_auth
+auth_param basic realm Proxy Access
+auth_param basic credentialsttl 2 hours
+acl authenticated_users proxy_auth REQUIRED
+http_access allow authenticated_users
+```
+
+#### Restart Squid:
+```
+sudo systemctl restart squid
+```
+
+#### Check the Log (for example the user is Vira):
+```
+cat /var/log/squid/access.log | grep "Vira"
+```
+
+#### For use on Win/Android/IOS:
+```
+Win: Proxifier / SocksCap64 
+IOS: Shadowrocket / Potatso Lite
+Android: SocksDroid / Every Proxy
+```
